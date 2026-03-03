@@ -18,8 +18,8 @@
 
 <div align="center">
   <!-- 建議在此處放上一張滿版的儀表板主畫面截圖 -->
-  <img src="https://via.placeholder.com/1000x550/0f172a/38bdf8?text=Dashboard+Overview+Screenshot+Here" alt="Dashboard Overview" width="100%">
-  <p><i>💡 建議：替換此圖為您本機運行時的戰情總覽全區截圖 (`screenshots/overview.png`)</i></p>
+  <img src="screenshots/overview.png" alt="Dashboard Overview" width="100%">
+  <p><i>💡 戰情總覽全區視角 (Overview Dashboard)</i></p>
 </div>
 
 ## 📑 專案背景 (Background)
@@ -37,8 +37,8 @@
 - **Threat Radar**: 把複合型攻擊（認知作戰 + 投資詐欺）量化為具體的財務風險（ROI Impact），供決策層調度跨部會資源。
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400/0f172a/a855f7?text=AI+NLP+Analyzer+Screenshot+Here" alt="AI Analyzer" width="80%">
-  <p><i>💡 建議：替換此圖為 AI 語意解析室的截圖</i></p>
+  <img src="screenshots/ai_nlp.png" alt="AI Analyzer" width="80%">
+  <p><i>💡 AI 語意解析室：具象化社會科學分析過程</i></p>
 </div>
 
 ### 2. 🧠 AI 社會科學語意解析室 (Social Science NLP)
@@ -53,8 +53,8 @@
 - 具備**一鍵發送 ISP 阻擋指令**的決策 UI，縮短行政流程。
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400/0f172a/ef4444?text=CTI+Blacklist+Screenshot+Here" alt="CTI Blacklist" width="80%">
-  <p><i>💡 建議：替換此圖為 CTI 威脅黑名單庫的截圖</i></p>
+  <img src="screenshots/cti_blacklist.png" alt="CTI Blacklist" width="80%">
+  <p><i>💡 CTI 威脅黑名單庫：大型資料檢索體驗</i></p>
 </div>
 
 ### 4. 🌐 CTI 威脅標的黑名單 (Threat Indicator DB)
