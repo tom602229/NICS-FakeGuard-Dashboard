@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeGuard 分析儀表板 | NICS</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">🛡️</div>
+                <div class="brand-text">
+                    <h1>FakeGuard</h1>
+                    <span>Cyber Intelligence</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <div class="nav-item active" data-target="view-dashboard">
+                    <span>📊</span> 戰情總覽
+                </div>
+                <div class="nav-item" data-target="view-nlp">
+                    <span>🧠</span> AI 語意解析室
+                </div>
+                <div class="nav-item" data-target="view-crowdsource">
+                    <span>📢</span> 情資審查與安檢
+                </div>
+                <div class="nav-item" data-target="view-tfc">
+                    <span>🔎</span> TFC 鑑識調查
+                </div>
+                <div class="nav-item" data-target="view-social">
+                    <span>🕸️</span> 論壇社群探測
+                </div>
+                <div class="nav-item" data-target="view-cti">
+                    <span>🌐</span> CTI 黑名單庫
+                </div>
+            </nav>
+
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <div>
+                    <div>System Online</div>
+                    <div style="font-size: 0.7rem; color: #6b7280; margin-top: 2px;">v 2026.1.0 (NICS)</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <main class="main-area">
+            <header class="top-header">
+                <div class="search-box">
+                    <input type="text" placeholder="尋找 IOCs, 網域, 關鍵字...">
+                </div>
+                <div class="user-info">
+                    <div class="user-name">
+                        <span>資安院高階資料分析師</span>
+                        <span class="user-role">NICS Analyst</span>
+                    </div>
+                    <div class="user-avatar">🧑‍💻</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <!-- VIEW 1: Dashboard -->
+                <section id="view-dashboard" class="view-section active">
+                    <div class="page-header">
+                        <h2 class="page-title">戰情總覽 Overview</h2>
+                        <p class="page-subtitle">即時監控全國錯假訊息與投資詐騙威脅動態</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="glass-card stat-box critical">
+                            <div class="stat-label">系統威脅層級</div>
+                            <div class="stat-value critical">CRITICAL</div>
+                            <div class="stat-trend trend-up">↑ 偵測到複合型攻擊</div>
+                        </div>
+                        <div class="glass-card stat-box warning">
+                            <div class="stat-label">預估財損風險 (TWD)</div>
+                            <div class="stat-value warning" id="count-loss">137.5M</div>
+                            <div class="stat-trend trend-up">↑ TFC + Social 累計</div>
+                        </div>
+                        <div class="glass-card stat-box">
+                            <div class="stat-label">阻擋高危網域數</div>
+                            <div class="stat-value safe" id="count-domains">5</div>
+                            <div class="stat-trend">✓ 165 CTI 資料集</div>
+                        </div>
+                        <div class="glass-card stat-box">
+                            <div class="stat-label">探測任務執行率</div>
+                            <div class="stat-value info">100<span style="font-size:1.2rem;">%</span></div>
+                            <div class="stat-trend">✓ Agentic Task Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="glass-card">
+                            <div class="info-box-title">即時情報匯流 (Live Intelligence Feed)</div>
+                            <div class="feed-stream" id="live-feed-container">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <div class="info-box-title">雷達威脅分佈</div>
+                            <div style="height: 250px; display: flex; align-items:center; justify-content:center; flex-direction:column; gap:15px;">
+                                <div style="width: 150px; height: 150px; border-radius: 50%; border: 1px dashed var(--glass-border); display: flex; align-items:center; justify-content:center; position:relative;">
+                                    <div style="width: 100px; height: 100px; background: rgba(239, 68, 68, 0.2); border-radius: 50%; border: 1px solid var(--alert-critical); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);"></div>
+                                    <div style="position: absolute; top:0; left:50%; width: 1px; height: 50%; background: var(--accent-cyan); transform-origin: bottom center; animation: radar 4s linear infinite;"></div>
+                                </div>
+                                <div class="stat-label">認知作戰 (45%) | 釣魚 (35%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: NLP Analyzer (New) -->
+                <section id="view-nlp" class="view-section">
+                    <div class="page-header">
+                        <h2 class="page-title">AI 對抗性語意解析室</h2>
+                        <p class="page-subtitle">NLP 意圖萃取、敘事模式及情緒煽動指標 (Social Science Module)</p>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="report-body">
+                            <div class="glass-card">
+                                <div class="info-box-title">📥 貼上可疑文本 (Text Input)</div>
+                                <textarea id="nlp-input" style="width:100%; height:180px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:8px; padding:15px; color:var(--text-primary); font-family:var(--font-ui); font-size:0.95rem; resize:vertical; margin-top:10px; margin-bottom:15px; outline:none;" placeholder="在此輸入懷疑的詐騙簡訊、LINE 群組推文或農場文章以進行 NLP 社會科學鑑識..."></textarea>
+                                <div style="display:flex; justify-content:flex-end;">
+                                    <button id="nlp-analyze-btn" class="scanner-btn" style="border-radius:20px; font-size:0.9rem; padding:0 1.5rem; height:40px;">◆ 啟動深度特徵萃取</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Analysis Results -->
+                            <div id="nlp-result-area" class="glass-card hidden" style="margin-top:20px; transition: all 0.5s ease; border-left:4px solid var(--accent-cyan);">
+                                <div class="info-box-title">📊 社會科學鑑識報告</div>
+                                <div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+                                    <div class="badge badge-critical" id="nlp-intent">意圖分類: 待解析</div>
+                                    <div class="badge badge-high" id="nlp-tactic">敘事手法: 待解析</div>
+                                </div>
+                                <ul class="info-list" id="nlp-evidence-list">
+                                    <li style="color:var(--text-secondary);">等待輸入文本中...</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Side Metrics -->
+                        <div class="report-sidebar">
+                            <div class="glass-card">
+                                <div class="info-box-title">🎯 情緒煽動指標 (Sentiment & Pressure)</div>
+                                <div style="margin-top:20px; display:flex; flex-direction:column; gap:15px;">
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:var(--text-secondary);">
+                                            <span>貪婪激發 (Greed/FOMO)</span>
+                                            <span id="score-greed" style="color:var(--alert-high); font-family:var(--font-data);">0%</span>
+                                        </div>
+                                        <div class="scan-progress-bar"><div class="scan-progress-fill" id="bar-greed" style="background:var(--alert-high); width:0%;"></div></div>
+                                    </div>
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:var(--text-secondary);">
+                                            <span>恐懼與急迫 (Fear/Urgency)</span>
+                                            <span id="score-fear" style="color:var(--alert-critical); font-family:var(--font-data);">0%</span>
+                                        </div>
+                                        <div class="scan-progress-bar"><div class="scan-progress-fill" id="bar-fear" style="background:var(--alert-critical); width:0%;"></div></div>
+                                    </div>
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:var(--text-secondary);">
+                                            <span>標的信任度 (Authority Trust)</span>
+                                            <span id="score-trust" style="color:var(--accent-cyan); font-family:var(--font-data);">0%</span>
+                                        </div>
+                                        <div class="scan-progress-bar"><div class="scan-progress-fill" id="bar-trust" style="background:var(--accent-cyan); width:0%;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2.5: Crowdsourced Reporting (New) -->
+                <section id="view-crowdsource" class="view-section">
+                    <div class="page-header">
+                        <h2 class="page-title">165 情資審查與安檢中心</h2>
+                        <p class="page-subtitle">ADCC (反詐騙協調中心) 網域深度鑑識與報案佇列審查</p>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="report-body">
+                            <!-- Input Area -->
+                            <div class="glass-card">
+                                <div class="info-box-title">🚨 疑似惡意網址深度鑑識 (Deep Scan)</div>
+                                <div class="scanner-container" style="margin-top:20px;">
+                                    <input type="text" id="crowd-url-input" class="scanner-input" placeholder="輸入待審核之網域名稱..." style="font-size:1.1rem; padding:1.2rem;">
+                                    <button id="crowd-btn" class="scanner-btn" style="border-radius:8px;">執行自動化威脅鑑識</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Crowd Score Result -->
+                            <div id="crowd-result-area" class="glass-card hidden" style="margin-top:20px; text-align:center;">
+                                <div class="info-box-title" style="justify-content:center; font-size:1.2rem;">🛡️ 威脅鑑識評分 (Threat Level Score)</div>
+                                <div style="display:flex; justify-content:center; align-items:center; gap:30px; margin-top:30px; margin-bottom:20px;">
+                                    <!-- Score Circle -->
+                                    <div style="position:relative; width:160px; height:160px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; border:8px solid var(--glass-border);" id="crowd-score-ring">
+                                        <div style="font-family:var(--font-data); font-size:3.5rem; font-weight:700;" id="crowd-score-val">0</div>
+                                        <div style="font-size:0.8rem; color:var(--text-secondary);">/ 100 分</div>
+                                    </div>
+                                    
+                                    <div style="text-align:left; max-width:300px;">
+                                        <h3 id="crowd-score-title" style="font-size:1.5rem; margin-bottom:10px;">尚未檢測</h3>
+                                        <p id="crowd-score-desc" style="color:var(--text-secondary); line-height:1.5;">請在上方輸入網址，系統將結合 165 CTI 資料庫與社群通報演算法，為您提供即時防護評分。</p>
+                                        
+                                        <div style="margin-top:15px; display:flex; gap:8px; flex-wrap:wrap;" id="crowd-tag-container">
+                                            <!-- Tags Go Here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="crowd-report-btn" class="badge badge-outline" style="cursor:pointer; background:rgba(239, 68, 68, 0.1); border-color:var(--alert-critical); color:var(--alert-critical); padding:8px 15px; transition:0.3s; margin-top:20px;">
+                                    ⛔ 確診為惡意網域 (加入黑名單並通報 ISP)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar: Live Comments -->
+                        <div class="report-sidebar">
+                            <div class="glass-card" style="height:100%;">
+                                <div class="info-box-title">📥 165 民眾通報佇列 (Triage Queue)</div>
+                                <div class="feed-stream" id="crowd-feed-container" style="max-height: 500px; margin-top:20px;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 3: TFC -->
+                <section id="view-tfc" class="view-section">
+                    <div class="page-header">
+                        <h2 class="page-title">事件鑑識：TFC FactCheck</h2>
+                        <p class="page-subtitle">情資來源：台灣事實查核中心 (TFC) 爬蟲探測</p>
+                    </div>
+                    
+                    <div class="report-grid">
+                        <div class="report-body">
+                            <div class="glass-card report-header-card threat-critical">
+                                <span class="badge badge-critical">Threat: Critical</span>
+                                <h3 class="report-title">假借國安基金內部操盤手之投資詐騙</h3>
+                                <p class="report-summary" id="tfc-summary"></p>
+                            </div>
+                            
+                            <div class="glass-card">
+                                <div class="info-box-title">🗂️ 關鍵證據剖析 (Evidence List)</div>
+                                <ul class="info-list" id="tfc-evidence"></ul>
+                            </div>
+                        </div>
+                        <div class="report-sidebar">
+                            <div class="glass-card info-box" style="margin-bottom: 1.5rem;">
+                                <div class="info-box-title">💰 潛在財務損失估算</div>
+                                <div class="stat-value warning" style="font-size: 1.5rem; margin:10px 0;" id="tfc-roi"></div>
+                                <p style="font-size:0.8rem; color:var(--text-secondary);">Dynamic_Risk_Score 量化模型</p>
+                            </div>
+                            <div class="glass-card info-box">
+                                <div class="info-box-title">⚡ 分析師行動建議</div>
+                                <ul class="info-list action-list" id="tfc-action"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 3: Social -->
+                <section id="view-social" class="view-section">
+                     <div class="page-header">
+                        <h2 class="page-title">論壇社群探測：PTT/Dcard</h2>
+                        <p class="page-subtitle">情資來源：封閉社群同溫層效應分析</p>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="report-body">
+                            <div class="glass-card report-header-card threat-high">
+                                <span class="badge badge-high">Threat: High</span>
+                                <h3 class="report-title">PTT/Dcard 假冒凱基VIP群組詐騙與暗樁操作</h3>
+                                <p class="report-summary" id="social-summary"></p>
+                            </div>
+                            
+                            <div class="glass-card">
+                                <div class="info-box-title">🗂️ 社群行為與誘餌剖析</div>
+                                <ul class="info-list" id="social-evidence"></ul>
+                            </div>
+                        </div>
+                        <div class="report-sidebar">
+                            <div class="glass-card info-box" style="margin-bottom: 1.5rem;">
+                                <div class="info-box-title">💰 潛在財務損失估算</div>
+                                <div class="stat-value warning" style="font-size: 1.5rem; margin:10px 0;" id="social-roi"></div>
+                                <p style="font-size:0.8rem; color:var(--text-secondary);">針對年輕小白族群之模型優化</p>
+                            </div>
+                            <div class="glass-card info-box">
+                                <div class="info-box-title">⚡ 分析師行動建議</div>
+                                <ul class="info-list action-list" id="social-action"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 4: CTI -->
+                <section id="view-cti" class="view-section">
+                    <div class="page-header">
+                        <h2 class="page-title">CTI 威脅標的黑名單</h2>
+                        <p class="page-subtitle">資料來源：內政部警政署 165 全民防騙網、反詐騙協調中心 (ADCC)</p>
+                    </div>
+
+                    <!-- CTI 統計數據看板 -->
+                    <div class="stats-grid" style="margin-bottom: 20px;">
+                        <div class="glass-card stat-box">
+                            <div class="stat-label">165 累積封鎖網域 (YDT)</div>
+                            <div class="stat-value critical" style="font-size: 2rem;">12,485</div>
+                            <div class="stat-trend trend-up">↑ 較上月增加 15%</div>
+                        </div>
+                        <div class="glass-card stat-box">
+                            <div class="stat-label">今日自動阻斷請求</div>
+                            <div class="stat-value warning" style="font-size: 2rem;">42</div>
+                            <div class="stat-trend trend-up">主要偽裝: 券商/虛擬貨幣</div>
+                        </div>
+                        <div class="glass-card stat-box">
+                            <div class="stat-label">最常遭偽冒品牌 (Top 1)</div>
+                            <div class="stat-value info" style="font-size: 1.5rem; margin-top:5px;">凱基證券</div>
+                            <div class="stat-trend">佔總釣魚網域 28%</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+                             <div class="info-box-title" style="margin-bottom:0;">🚨 活躍與歷史威脅指標 (IOCs)</div>
+                             <div class="search-box" style="width: auto; min-width: 250px; margin: 0;">
+                                 <input type="text" placeholder="搜尋網域、IP或標籤..." style="padding: 8px 15px;">
+                             </div>
+                         </div>
+                         <div class="data-table-wrapper">
+                             <table class="data-table">
+                                 <thead>
+                                     <tr>
+                                         <th>惡意網域 (Malicious Domain)</th>
+                                         <th>偽冒目標</th>
+                                         <th>主機位置 (GeoIP)</th>
+                                         <th>首次偵測 (First Seen)</th>
+                                         <th>威脅標籤</th>
+                                         <th>當前狀態</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="cti-table-body">
+                                     <!-- Populated by JS -->
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div style="text-align: center; margin-top: 15px;">
+                             <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">顯示 1-8 筆，共 12,485 筆... (動態資料庫連線中)</div>
+                             <button class="badge badge-outline" style="cursor: pointer; padding: 6px 20px; font-size: 0.9rem;">載入更多情報 (Load More)</button>
+                         </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Extra animation style block -->
+    <style>
+        @keyframes radar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="./script.js"></script>
+</body>
+</html>
